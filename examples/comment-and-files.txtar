@@ -1,0 +1,6 @@
+Archive-level comment.
+This text belongs to the archive, not a file.
+-- hello.txt --
+hello
+-- dir/world.txt --
+world

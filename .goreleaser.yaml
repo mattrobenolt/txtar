@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
+version: 2
+
+project_name: txtar
+
+builds:
+  - id: txtar
+    builder: zig
+    binary: txtar
+    targets:
+      - aarch64-macos
+      - x86_64-linux
+      - aarch64-linux
+    flags:
+      - -Doptimize=ReleaseFast
+      - -Dcpu=baseline
+
+archives:
+  - id: default
+    ids:
+      - txtar
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    formats:
+      - tar.gz
+
+checksum:
+  name_template: checksums.txt
+
+homebrew_casks:
+  - name: txtar
+    homepage: https://github.com/mattrobenolt/txtar
+    description: Go-style txtar archives for Zig.
+    binaries:
+      - txtar
+    repository:
+      owner: mattrobenolt
+      name: homebrew-stuff
+      token: '{{ .Env.HOMEBREW_TAP_TOKEN }}'

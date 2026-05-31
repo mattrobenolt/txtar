@@ -1,0 +1,2 @@
+-- no-newline.txt --
+parser should treat this as newline-terminated

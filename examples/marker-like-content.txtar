@@ -1,0 +1,5 @@
+This is comment text.
+not -- a marker -- because it does not start the line correctly
+-- real.txt --
+this line is file data
+also not -- a marker --
