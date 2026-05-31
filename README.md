@@ -12,7 +12,7 @@ hello
 world
 ```
 
-This package is modeled after `golang.org/x/tools/txtar`, but uses Zig ownership conventions and `std.Io` streaming APIs.
+This package is modeled after Go's [`golang.org/x/tools/txtar`](https://pkg.go.dev/golang.org/x/tools/txtar), but uses Zig ownership conventions and `std.Io` streaming APIs.
 
 ## Library
 
