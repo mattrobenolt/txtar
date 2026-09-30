@@ -1,6 +1,6 @@
 # txtar
 
-`txtar` is a small Zig 0.15 library and command-line tool for Go-style text archives.
+`txtar` is a small Zig 0.16 library and command-line tool for Go-style text archives.
 
 A txtar archive is plain text: an optional comment followed by file entries. Each file starts with a marker line, then its contents.
 
@@ -100,7 +100,7 @@ The repository also builds a `txtar` command.
 Create an archive:
 
 ```sh
-txtar -c -f archive.txtar README.md src/root.zig
+txtar -c -f archive.txtar LICENSE src/root.zig
 ```
 
 Extract an archive:
@@ -120,8 +120,11 @@ The extractor rejects absolute paths and `..` path components.
 
 ## Development
 
+The project requires Zig 0.16.0. `zig build test` runs the library and CLI tests.
+
 ```sh
 nix develop
 zig build test
-zig build run -- -cf sample.txtar README.md
+zig build
+zig build run -- -cf sample.txtar LICENSE
 ```

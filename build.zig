@@ -29,9 +29,14 @@ pub fn build(b: *std.Build) void {
     });
 
     const run_tests = b.addRunArtifact(tests);
+    const cli_tests = b.addTest(.{
+        .root_module = exe.root_module,
+    });
+    const run_cli_tests = b.addRunArtifact(cli_tests);
 
-    const test_step = b.step("test", "Run tests");
+    const test_step = b.step("test", "Run library and CLI tests");
     test_step.dependOn(&run_tests.step);
+    test_step.dependOn(&run_cli_tests.step);
 
     const run_cmd = b.addRunArtifact(exe);
     if (b.args) |args| run_cmd.addArgs(args);

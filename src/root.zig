@@ -7,13 +7,13 @@
 const std = @import("std");
 const testing = std.testing;
 const mem = std.mem;
-const fs = std.fs;
 const Io = std.Io;
+const Dir = Io.Dir;
 const Allocator = mem.Allocator;
 
 const marker = "-- ";
 const marker_end = " --";
-const marker_candidate_max = fs.max_path_bytes + marker.len + marker_end.len;
+const marker_candidate_max = Dir.max_path_bytes + marker.len + marker_end.len;
 
 /// A complete txtar archive owned by the caller.
 pub const Archive = struct {
@@ -163,7 +163,7 @@ pub const EntryWriter = struct {
 /// that file's data to a writer until the next marker line.
 pub const Reader = struct {
     reader: *Io.Reader,
-    pending_name_buf: [fs.max_path_bytes]u8 = undefined,
+    pending_name_buf: [Dir.max_path_bytes]u8 = undefined,
     pending_name: ?[]const u8 = null,
     comment_written: bool = false,
     entry_open: bool = false,
@@ -221,7 +221,7 @@ pub const Reader = struct {
                 else => return err,
             };
 
-            if (mem.indexOf(u8, bytes, "\n" ++ marker)) |index| {
+            if (mem.find(u8, bytes, "\n" ++ marker)) |index| {
                 const len = index + 1;
                 try writeAndNote(writer, &last_byte, bytes[0..len]);
                 self.reader.toss(len);
@@ -488,7 +488,7 @@ test "empty file entry" {
 }
 
 test "long content line is not limited by max path bytes" {
-    const long = "x" ** (fs.max_path_bytes + 128);
+    const long = "x" ** (Dir.max_path_bytes + 128);
     var reader: Io.Reader = .fixed("-- long.txt --\n" ++ long ++ "\n");
     var entries: Reader = .init(&reader);
 
@@ -531,17 +531,17 @@ test "marker split across reader buffer boundary" {
     var tmp = testing.tmpDir(.{});
     defer tmp.cleanup();
 
-    try tmp.dir.writeFile(.{
+    try tmp.dir.writeFile(testing.io, .{
         .sub_path = "split.txtar",
         .data = "comment\n-- a.txt --\nbody\n-- b.txt --\nnext\n",
         .flags = .{},
     });
 
-    const file = try tmp.dir.openFile("split.txtar", .{});
-    defer file.close();
+    const file = try tmp.dir.openFile(testing.io, "split.txtar", .{});
+    defer file.close(testing.io);
 
     var reader_buf: [5]u8 = undefined;
-    var file_reader = file.reader(&reader_buf);
+    var file_reader = file.reader(testing.io, &reader_buf);
     var entries: Reader = .init(&file_reader.interface);
 
     var comment_buf: [32]u8 = undefined;

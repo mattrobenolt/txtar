@@ -29,15 +29,24 @@
             inherit system;
             overlays = [ mattware.overlays.default ];
           };
+
+          ast-grep = pkgs.ast-grep {
+            languages.zig = {
+              grammar = pkgs.tree-sitter-grammars.tree-sitter-zig;
+              extensions = [ "zig" ];
+            };
+          };
         in
         {
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [
+              ast-grep
               goreleaser
-              zig_0_15
+              zig_0_16
               zigdoc
               ziglint
-              zls_0_15
+              zls_0_16
+              pinact
             ];
           };
         };
